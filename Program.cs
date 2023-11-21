@@ -106,5 +106,5 @@ if (bytes > 0)
     }
     writer.Flush();
     stream.WriteTo(output);
-    Console.WriteLine("INFO: Wrote {0} bytes to {1}", stream.Length, output.Name);
+    Console.WriteLine("INFO: Wrote {0} bytes to {1}", output.Length, output.Name);
 }
