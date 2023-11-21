@@ -53,9 +53,11 @@ if (bytes > 0)
                     writer.WritePropertyName(reader.GetString() ?? "NN");
                     break;
                 case JsonTokenType.String:
-                    string? text = reader.GetString();
-                    string replacement = string.Join("", Enumerable.Range(0, text?.Length ?? 0)
-                        .Select(i => replacementStringCharacters.ElementAt(Random.Shared.Next(replacementStringCharacters.Length))));
+                    int valueLength = reader.HasValueSequence
+                        ? checked((int)reader.ValueSequence.Length)
+                        : reader.ValueSpan.Length;
+                    string replacement = string.Join("", Enumerable.Range(0, valueLength)
+                        .Select(i => replacementStringCharacters[Random.Shared.Next(replacementStringCharacters.Length)]));
                     writer.WriteStringValue(replacement);
                     break;
                 case JsonTokenType.Number:
@@ -90,9 +92,10 @@ if (bytes > 0)
                 default:
                     break;
             }
-        } catch (InvalidOperationException exception)
+        }
+        catch (InvalidOperationException exception)
         {
-            
+
             Console.Error.WriteLine(
                 "ERROR: Unable to parse JSON in input file at position {0}, depth {1}\n{2}",
                 reader.TokenStartIndex,
